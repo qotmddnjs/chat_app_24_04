@@ -1,6 +1,8 @@
 package com.koreat.exam.chat_app_24_04;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +14,17 @@ import java.util.List;
 public class ChatController {
   private List<ChatMessage> chatMessages = new ArrayList<>();
 
+  public record writeMessageRequest(String authorName, String content) {
+  }
+
   public record writeMessageResponse(long id) {
 
   }
 
   @PostMapping("/writeMessage")
   @ResponseBody
-  public RsData<writeMessageResponse> writeMessage() {
-    ChatMessage message = new ChatMessage("홍길동", "안녕하세요");
+  public RsData<writeMessageResponse> writeMessage(@RequestBody writeMessageRequest req) {
+    ChatMessage message = new ChatMessage(req.authorName, req.content);
     chatMessages.add(message);
     return new RsData<>(
         "S-1",
@@ -39,6 +44,4 @@ public class ChatController {
     );
 
   }
-
-
 }
